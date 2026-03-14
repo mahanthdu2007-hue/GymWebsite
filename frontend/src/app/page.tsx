@@ -1,58 +1,83 @@
 'use client';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import AnimatedText from '@/components/AnimatedText';
+import ParticleBackground from '@/components/ParticleBackground';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Star, Shield, Zap, Target } from 'lucide-react';
 
 export default function Home() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Parallax effects
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
   const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
   const staggerContainer: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.4 } }
+  };
+
+  const sectionVariants: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" ref={containerRef}>
       
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+        {/* Particle Background */}
+        <ParticleBackground />
+
+        {/* Background Image with Overlay and Parallax */}
+        <motion.div 
+          className="absolute inset-0 z-0 origin-top"
+          style={{ y: backgroundY }}
+        >
           <img 
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" 
             alt="Gym background" 
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-[120%] object-cover opacity-60 pointer-events-none"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/40 to-black/80 pointer-events-none"></div>
+        </motion.div>
 
         <motion.div 
-          className="relative z-10 text-center px-4 max-w-5xl mx-auto"
+          className="relative z-10 text-center px-4 max-w-5xl mx-auto pointer-events-none"
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
+          style={{ y: textY, opacity }}
         >
-          <motion.h1 
-            variants={fadeInUp}
-            className="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 text-white drop-shadow-lg"
-          >
-            Your Second <span className="text-yellow-500">Chance</span>
-          </motion.h1>
+          <AnimatedText 
+            text="Your Second Chance" 
+            className="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 text-white drop-shadow-2xl" 
+          />
+          
           <motion.p 
             variants={fadeInUp}
-            className="text-xl md:text-3xl font-light text-gray-300 mb-10 tracking-wide"
+            className="text-xl md:text-3xl font-light text-gray-300 mb-10 tracking-wide mt-6 drop-shadow-md"
           >
             Premium training facility for the elite.
           </motion.p>
           
-          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link href="/book" className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-black bg-yellow-500 rounded hover:bg-yellow-400 transition-all uppercase tracking-widest overflow-hidden">
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center pointer-events-auto">
+            <Link href="/book" className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-black bg-yellow-500 rounded hover:bg-yellow-400 transition-all uppercase tracking-widest overflow-hidden hover:scale-105 active:scale-95 duration-300">
               <span className="relative z-10 flex items-center gap-2">Book Free Trial <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
             </Link>
-            <Link href="/programs" className="inline-flex items-center justify-center px-8 py-4 font-bold text-white glass rounded hover:bg-white/10 transition-all uppercase tracking-widest border border-white/20">
+            <Link href="/programs" className="inline-flex items-center justify-center px-8 py-4 font-bold text-white glass rounded transition-all uppercase tracking-widest border border-white/20 hover:bg-white/10 hover:border-white/40 hover:scale-105 active:scale-95 duration-300">
               View Programs
             </Link>
           </motion.div>
@@ -101,7 +126,13 @@ export default function Home() {
       </section>
 
       {/* Featured Programs */}
-      <section className="py-24 bg-[#0a0a0a]">
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+        className="py-24 bg-[#0a0a0a]"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-16 border-b border-white/10 pb-8">
             <div>
@@ -133,10 +164,16 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-[#050505]">
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+        className="py-24 bg-[#050505]"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl md:text-5xl font-black text-center uppercase tracking-tight mb-16 text-gradient">Success Stories</h2>
           
@@ -158,10 +195,16 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-yellow-500 relative overflow-hidden">
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+        className="py-24 bg-yellow-500 relative overflow-hidden"
+      >
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), repeating-linear-gradient(45deg, #000 25%, #000 25%, transparent 25%, transparent 75%, #000 75%, #000)', backgroundPosition: '0 0, 10px 10px', backgroundSize: '20px 20px' }}></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <h2 className="text-5xl md:text-6xl font-black text-black uppercase tracking-tighter mb-6">Ready to Transform?</h2>
@@ -170,7 +213,7 @@ export default function Home() {
             Claim Your Spot
           </Link>
         </div>
-      </section>
+      </motion.section>
       
     </div>
   );
