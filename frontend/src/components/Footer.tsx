@@ -41,9 +41,9 @@ export default function Footer() {
             <h3 className="text-white font-semibold uppercase tracking-wider mb-4">Contact</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>123 Fitness Ave.</li>
-              <li>New York, NY 10001</li>
-              <li className="pt-2">contact@planbthegym.com</li>
-              <li>+1 (555) 123-4567</li>
+              <li>India,10001</li>
+              <li className="pt-2">mahanthdu1423@gmail.com.com</li>
+              <li>+91 8217686386</li>
             </ul>
           </div>
 
