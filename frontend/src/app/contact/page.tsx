@@ -5,18 +5,34 @@ import { MapPin, Phone, Mail, Instagram, Twitter, Facebook, Send } from 'lucide-
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const message = formData.get('message');
-    
-    window.location.href = `mailto:mahanthdu1423@gmail.com?subject=Gym Website Contact: ${name}&body=Name: ${name}%0AEmail: ${email}%0A%0AMessage:%0A${message}`;
-    
-    setTimeout(() => {
-      setSubmitted(true);
-    }, 1000);
+    formData.append("access_key", "c1b564eb-5471-425b-a136-ced439f03e5d");
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: json
+      });
+      const result = await response.json();
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        console.error("Failed to send message", result);
+        alert("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+       console.error("Error submitting form", error);
+       alert("An error occurred while sending your message. Please try again.");
+    }
   };
 
   return (
