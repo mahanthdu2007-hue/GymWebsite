@@ -5,8 +5,15 @@ import { MapPin, Phone, Mail, Instagram, Twitter, Facebook, Send } from 'lucide-
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const message = formData.get('message');
+    
+    window.location.href = `mailto:mahanthdu1423@gmail.com?subject=Gym Website Contact: ${name}&body=Name: ${name}%0AEmail: ${email}%0A%0AMessage:%0A${message}`;
+    
     setTimeout(() => {
       setSubmitted(true);
     }, 1000);
@@ -34,11 +41,11 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center gap-4 text-gray-400 mb-6">
                 <Phone className="w-6 h-6 text-yellow-500" />
-                <p className="font-bold text-white tracking-widest">+1 (555) 123-4567</p>
+                <p className="font-bold text-white tracking-widest">+91 8217686386</p>
               </div>
               <div className="flex items-center gap-4 text-gray-400">
                 <Mail className="w-6 h-6 text-yellow-500" />
-                <p className="font-bold text-white tracking-widest">contact@planbthegym.com</p>
+                <p className="font-bold text-white tracking-widest">mahanthdu1423@gmail.com</p>
               </div>
             </div>
 
@@ -80,15 +87,15 @@ export default function ContactPage() {
                 <h2 className="text-3xl font-black uppercase tracking-wide mb-8">Send a Message</h2>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Name</label>
-                  <input required type="text" className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors" placeholder="Your Name" />
+                  <input required type="text" name="name" className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors" placeholder="Your Name" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Email</label>
-                  <input required type="email" className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors" placeholder="your@email.com" />
+                  <input required type="email" name="email" className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors" placeholder="your@email.com" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Message</label>
-                  <textarea required rows={5} className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
+                  <textarea required rows={5} name="message" className="w-full bg-black/50 border border-white/10 rounded p-4 text-white focus:outline-none focus:border-yellow-500 transition-colors resize-none" placeholder="How can we help you?"></textarea>
                 </div>
                 <button type="submit" className="w-full py-4 bg-yellow-500 text-black font-black uppercase tracking-widest rounded hover:bg-yellow-400 transition-colors flex items-center justify-center gap-2">
                   Send <Send className="w-4 h-4" />

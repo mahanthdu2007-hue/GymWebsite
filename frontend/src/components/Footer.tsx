@@ -42,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li>123 Fitness Ave.</li>
               <li>India,10001</li>
-              <li className="pt-2">mahanthdu1423@gmail.com.com</li>
+              <li className="pt-2">mahanthdu1423@gmail.com</li>
               <li>+91 8217686386</li>
             </ul>
           </div>
