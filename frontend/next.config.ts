@@ -1,11 +1,9 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: "export",
   basePath: "/GymWebsite",
   images: {
-    unoptimized: true,
-  },
-};
+    unoptimized: true
+  }
+}
 
-export default nextConfig;
+export default nextConfig
